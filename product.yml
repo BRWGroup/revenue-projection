@@ -1,0 +1,43 @@
+dataProductSpecification: 0.0.1
+id: product-id
+info:
+  title: Your Product Name
+  owner: finance_analist
+  type: python-scheduled
+  status: active
+  archetype: consumer-aligned
+  maturity: managed
+inputPorts:
+- id: finance-revenue
+  name: Finance Revenue
+  description: Revenue data of the finance department
+  sourceSystemId: accounting
+  type: blob
+  location: acme.customers.events
+  links:
+    location: http://example.com
+transform:
+  cpus: 1
+  schedule:
+    cron: '@daily'
+outputPorts:
+- id: finance-revenue-doubled
+  name: Finance Revenue Doubled
+  description: Revenue data of the finance department, but then doubled!
+  type: blob
+  status: active
+  autoApprove: false
+  containsPii: false
+  dataContractId: your_contract_id
+  tags:
+  - demo
+  links:
+    location: http://link-to-location.example.com
+  custom:
+    platformRole: finance_reporting_role
+tags:
+- demo
+links:
+  repository: https://github.com/BRWGroup/python-data-product-template
+custom:
+  platformRole: finance_reporting_role

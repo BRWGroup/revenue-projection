@@ -1,0 +1,78 @@
+name: Deploy Data Product
+
+on:
+    push:
+        branches: [ main ]
+
+jobs:
+
+  validate_spec:
+    runs-on: ubuntu-latest
+    name: ✅ Validate Specification
+    steps:
+      # Checkout local repo
+      - name: checkout repo
+        uses: actions/checkout@v4
+      # Install Python & Deps
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+        shell: bash
+      # Pass spec to shell
+      - shell: bash
+        run: echo "DATA_PRODUCT_SPEC=$(python platform/process_spec.py)" >> $GITHUB_ENV
+      - name: Echo var
+        shell: bash
+        run: |
+          echo ${{ env.DATA_PRODUCT_SPEC }}
+      # Pull utils from platform repo
+      - name: Fetch validation
+        id: fetch-validate
+        uses: actions/checkout@v4
+        with:
+          repository: BRWGroup/github-actions
+      # Run product spec validation
+      - name: Validate spec
+        id: validate
+        uses: ./actions/validate-spec/
+      # Guard
+      - name: Validity check
+        if: steps.validate.outputs.validity != 'True'
+        uses: actions/github-script@v7
+        with:
+          script: |
+              core.setFailed('${{steps.validate.outputs.validity}}')
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: validate_spec
+    name: 🚀 Deploy infrastructure
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+
+  publish:
+    needs: deploy
+    runs-on: ubuntu-latest
+    name: 📣 Publish to Platform
+    steps:
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
