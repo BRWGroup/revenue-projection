@@ -1,5 +1,5 @@
 dataProductSpecification: 0.0.1
-id: product-id
+id: revenue-projection
 info:
   title: Your Product Name
   owner: finance_analist
@@ -17,11 +17,11 @@ inputPorts:
   links:
     location: http://example.com
 transform:
-  cpus: 1
+  cpus: 100
   schedule:
     cron: '@daily'
 outputPorts:
-- id: finance-revenue-doubled
+- id: finance-revenue-projection
   name: Finance Revenue Doubled
   description: Revenue data of the finance department, but then doubled!
   type: blob
